@@ -12,7 +12,9 @@ class BooksController extends Controller
      */
     public function index()
     {
-        //
+            $books = Books::all();
+
+        return response()->json($books, 200);
     }
 
     /**
@@ -43,10 +45,10 @@ class BooksController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Books $books)
-    {
-        //
-    }
+        public function show(Books $book)
+        {
+            return response()->json($book, 200);
+        }
 
     /**
      * Show the form for editing the specified resource.
@@ -59,16 +61,31 @@ class BooksController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Books $books)
+    public function update(Request $request, Books $book)
     {
-        //
+         $validated = $request->validate([
+        'title' => 'sometimes|required|string|max:255',
+        'author' => 'sometimes|required|string|max:255',
+        'release_date' => 'sometimes|required|date'
+    ]);
+
+    $book->update($validated);
+
+    return response()->json([
+        'message' => 'Book updated successfully',
+        'data' => $book
+    ],  200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Books $books)
+    public function destroy(Books $book)
     {
-        //
+        $book->delete();
+
+    return response()->json([
+        'message' => 'Book deleted successfully'
+    ], 200);
     }
 }
